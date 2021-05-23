@@ -43,11 +43,15 @@ class Point {
  **********************************************************/
 class Wallet {
   // implement Wallet!
-  constructor(money = 0) {}
-
-  credit = amount => {};
-
-  debit = amount => {};
+  constructor(money = 0,) {
+    
+    this.money = money;
+    
+  }
+  credit = amount => {this.money += amount
+  };
+  debit = amount => { this.money -= amount
+  };
 }
 
 /**********************************************************
@@ -62,8 +66,16 @@ class Wallet {
  * let person = new Person(name, x, y);
  **********************************************************/
 class Person {
+  constructor (name , x ,y, money = 0){ 
+  this.name = name;
+  this.location = new Point (x,y) 
+  this.Wallet = new Wallet (money)
+}
+moveTo = (point) => this.location = point
   // implement Person!
 }
+
+
 
 /**********************************************************
  * Vendor: defines a vendor
@@ -80,7 +92,20 @@ class Person {
  *
  * new vendor = new Vendor(name, x, y);
  **********************************************************/
-class Vendor {
+class Vendor extends Person{
+  constructor(name , x ,y) {
+    super (name , x ,y);
+    
+  }
+   range = 5
+   price = 1
+  sellTo = (Customer,numberOfIceCreams) => {
+    
+   this.moveTo(Customer.location)
+   let cost = numberOfIceCreams * this.price
+   Customer.wallet.debit (cost) 
+    this.wallet.credit (cost)
+  }
   // implement Vendor!
 }
 
@@ -100,9 +125,20 @@ class Vendor {
  *
  * new customer = new Customer(name, x, y);
  **********************************************************/
-class Customer {
+class Customer extends Person {
+  constructor (name,x,y) { 
+    super (name , x ,y)
+    this.wallet = new Wallet(10)
+  }
+    _isInRange = (Vendor) => this.location.distanceTo(Vendor.location) <= Vendor.range
+    _haveEnoughMoney = (vendor, numberOfIceCreams) => this.wallet.money >= numberOfIceCreams * vendor.price
+    requestIceCream = (vendor, numberOfIceCreams) => {
+      if (this._isInRange(vendor) && this._haveEnoughMoney(vendor, numberOfIceCreams))
+      vendor.sellTo(this,numberOfIceCreams)
+    }
+ }
   // implement Customer!
-}
+
 
 export { Point, Wallet, Person, Customer, Vendor };
 
